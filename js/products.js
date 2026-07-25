@@ -267,6 +267,7 @@ const PRODUCTS = [
     colors: ["#008080", "#ff7f50"],
     colorNames: ["Indigo Teal", "Rust Amber"],
     gradient: "linear-gradient(135deg, #003d3d 0%, #008080 50%, #00b3b3 100%)",
+    image: "images/kurta_block.jpg",
     emoji: "🩱",
     isFlashDeal: false,
     isTrending: true,
