@@ -383,6 +383,28 @@ const PRODUCTS = [
     isTrending: true,
     description: "Premium Real Madrid 2026 Home Club Jersey with high-quality Rubber Print detailing. Best Quality double-knit breathable jacquard fabric featuring signature club crest and official sponsor details.",
     inStock: true
+  },
+  {
+    id: "p18",
+    title: "FC Barcelona 26-27 Away Jersey",
+    brand: "IKON SPORTS",
+    category: "Club Jersey",
+    price: 7999,
+    originalPrice: 11763,
+    discount: 32,
+    rating: 4.9,
+    reviewCount: 187,
+    quantity: 20,
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["#1a0033", "#6a0dad"],
+    colorNames: ["Midnight Black", "Royal Purple"],
+    gradient: "linear-gradient(135deg, #0a0010 0%, #1a0033 40%, #6a0dad 100%)",
+    image: "images/jersey_barcelona.jpg",
+    emoji: "👕",
+    isFlashDeal: true,
+    isTrending: true,
+    description: "Original Rubber Print Product — FC Barcelona 26-27 Away Jersey in a stunning black-to-purple gradient with premium rubber print crest and Spotify badge. Breathable polyester dry-fit fabric with moisture-wicking technology.",
+    inStock: true
   }
 ];
 
