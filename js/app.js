@@ -1133,7 +1133,333 @@ const App = {
   handleCheckoutFinalSubmit(e) {
     e.preventDefault();
     const payMethod = document.querySelector('input[name="pay-method"]:checked').value;
+    this.checkoutData.payMethod = payMethod;
+    this.renderPaymentGateway();
+  },
+
+  // Interactive Payment Gateway Gateway
+  renderPaymentGateway() {
+    const totals = Store.totals();
+    const content = document.getElementById('modal-content');
+    const method = this.checkoutData.payMethod;
+
+    // Generate random 4-digit code for COD captcha
+    const captchaVal = Math.random().toString(36).substring(2, 6).toUpperCase();
+    this.checkoutData.currentCaptcha = captchaVal;
+
+    content.innerHTML = `
+      <div style="padding:1rem;">
+        <!-- Step timeline -->
+        <div class="checkout-steps">
+          <div class="step done">
+            <span class="step-circle">1</span>
+            <span class="step-label">Shipping</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step done">
+            <span class="step-circle">2</span>
+            <span class="step-label">Method</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step active">
+            <span class="step-circle">3</span>
+            <span class="step-label">Payment</span>
+          </div>
+        </div>
+
+        <div id="pg-main-view">
+          <h3 style="font-family:var(--ff-head); font-weight:800; font-size:1.3rem; margin-bottom:1rem; text-align:center;">Secure Gateway Authorization</h3>
+          <p style="font-size:0.8rem; text-align:center; color:var(--text2); margin-bottom:1.5rem;">Method: <strong>${method}</strong></p>
+
+          ${this.getPaymentFormHTML(method, totals.total, captchaVal)}
+        </div>
+      </div>
+    `;
+
+    // Start payment specific JS handlers/triggers
+    if (method.includes('UPI')) {
+      this.startUPITimer();
+    } else if (method.includes('Card')) {
+      this.setupCardListeners();
+    }
+  },
+
+  getPaymentFormHTML(method, amount, captchaVal) {
+    if (method.includes('UPI')) {
+      return `
+        <div class="pg-container">
+          <div class="upi-timer" id="upi-countdown">03:00</div>
+          <div class="upi-qr-box">
+            <div class="upi-qr-scanner-line"></div>
+            <!-- Mock SVG QR Code -->
+            <svg width="100" height="100" viewBox="0 0 29 29" style="background:#fff; shape-rendering:crispEdges;">
+              <path fill="#000" d="M0 0h7v7H0zm22 0h7v7h-7zM0 22h7v7H0zm9 0h2v2H9zm2 2h2v2h-2zm-2 2h2v3H9zm4-15h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm10-4h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm-6-2h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2z"/>
+              <path fill="#000" d="M2 2h3v3H2zm20 0h3v3h-3zM2 24h3v3H2zm7-20h2v2H9zm4 11h2v2h-2zm4-6h2v2h-2zm2 6h2v2h-2zm-4 4h2v2h-2zm4 4h2v2h-2zm-4 3h2v2h-2z"/>
+            </svg>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text2); text-align:center; margin-bottom:1.25rem; max-width:280px; line-height:1.4;">
+            Scan this QR code with PhonePe, GPay, Paytm or Bhim App to complete the payment of <strong>₹${amount.toLocaleString()}</strong>.
+          </p>
+          <form onsubmit="App.verifyUPIPayment(event)" style="width:100%; max-width:320px;">
+            <div style="margin-bottom:1.25rem;">
+              <label style="font-size:.75rem; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">Enter 12-digit UPI UTR / Ref Number</label>
+              <input type="text" id="upi-utr" pattern="[0-9]{12}" maxlength="12" placeholder="e.g. 340912784512" class="form-control" required style="text-align:center; font-weight:800; letter-spacing:1px;">
+            </div>
+            <button type="submit" class="btn btn-primary btn-blk">VERIFY & CONFIRM ORDER</button>
+          </form>
+        </div>
+      `;
+    } else if (method.includes('Card')) {
+      return `
+        <div class="pg-container">
+          <!-- Interactive Flip Card -->
+          <div class="pg-card-wrapper">
+            <div class="pg-card" id="pg-virtual-card">
+              <!-- Front -->
+              <div class="pg-card-front">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div class="pg-card-chip"></div>
+                  <div class="pg-card-brand-logo" id="card-brand-logo">CARD</div>
+                </div>
+                <div class="pg-card-number" id="card-num-display">•••• •••• •••• ••••</div>
+                <div class="pg-card-holder-group">
+                  <div>
+                    <div style="color:rgba(255,255,255,0.6); font-size:0.6rem; margin-bottom:2px;">CARDHOLDER</div>
+                    <div class="pg-card-holder-name" id="card-holder-display">YOUR NAME</div>
+                  </div>
+                  <div style="text-align:right;">
+                    <div style="color:rgba(255,255,255,0.6); font-size:0.6rem; margin-bottom:2px;">EXPIRES</div>
+                    <div id="card-expiry-display">MM/YY</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Back -->
+              <div class="pg-card-back">
+                <div class="pg-card-black-bar"></div>
+                <div style="margin-top:1.5rem; padding:0 1rem; color:rgba(255,255,255,0.6); font-size:0.6rem; text-align:right;">CVV / CVC</div>
+                <div class="pg-card-signature-bar">
+                  <span id="card-cvv-display">•••</span>
+                </div>
+                <div style="margin-top:1rem; padding:0 1.25rem; font-size:0.5rem; line-height:1.3; color:rgba(255,255,255,0.4);">
+                  This card is mock authorized for secure e-commerce gateway testing purposes.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input Fields -->
+          <form onsubmit="App.processCardPayment(event)" style="width:100%; max-width:320px;">
+            <div style="margin-bottom:0.9rem;">
+              <label style="font-size:.72rem; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">Cardholder Name</label>
+              <input type="text" id="card-holder" placeholder="SUPROJIT NANDI" class="form-control" required autocomplete="off">
+            </div>
+            <div style="margin-bottom:0.9rem;">
+              <label style="font-size:.72rem; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">Card Number</label>
+              <input type="text" id="card-number" maxlength="19" placeholder="4111 2222 3333 4444" class="form-control" required autocomplete="off">
+            </div>
+            <div style="display:flex; gap:1rem; margin-bottom:1.5rem;">
+              <div style="flex:1;">
+                <label style="font-size:.72rem; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">Expiry Date</label>
+                <input type="text" id="card-expiry" maxlength="5" placeholder="MM/YY" class="form-control" required autocomplete="off">
+              </div>
+              <div style="flex:1;">
+                <label style="font-size:.72rem; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">CVV / CVC</label>
+                <input type="password" id="card-cvv" maxlength="3" placeholder="123" class="form-control" required autocomplete="off">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-blk">PAY ₹${amount.toLocaleString()} SECURELY</button>
+          </form>
+        </div>
+      `;
+    } else {
+      // Cash on Delivery
+      return `
+        <div class="pg-container" style="max-width:320px; margin:0 auto;">
+          <p style="font-size:0.8rem; color:var(--text2); text-align:center; margin-bottom:1.25rem; line-height:1.4;">
+            To complete your order with <strong>Cash on Delivery (COD)</strong>, please verify you are not a robot by entering the captcha code below.
+          </p>
+          
+          <div class="captcha-container">
+            <div class="captcha-code" id="captcha-display">${captchaVal}</div>
+            <button type="button" class="captcha-refresh-btn" onclick="App.refreshCaptcha()">🔄</button>
+          </div>
+
+          <form onsubmit="App.verifyCODPayment(event)" style="width:100%;">
+            <div style="margin-bottom:1.5rem;">
+              <label style="font-size:.72rem; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">Enter CAPTCHA Code</label>
+              <input type="text" id="captcha-input" placeholder="Type letters above" class="form-control" required style="text-align:center; font-weight:800; text-transform:uppercase;">
+            </div>
+            <button type="submit" class="btn btn-primary btn-blk">CONFIRM & PLACE COD ORDER</button>
+          </form>
+        </div>
+      `;
+    }
+  },
+
+  // UPI Countdown timer
+  startUPITimer() {
+    let timeLeft = 180; // 3 minutes
+    const display = document.getElementById('upi-countdown');
     
+    if (this.upiInterval) clearInterval(this.upiInterval);
+    
+    this.upiInterval = setInterval(() => {
+      let minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      seconds = seconds < 10 ? '0' + seconds : seconds;
+      
+      if (display) display.textContent = `${minutes}:${seconds}`;
+      
+      if (timeLeft <= 0) {
+        clearInterval(this.upiInterval);
+        this.toast('UPI payment window expired. Please try again.', 'error');
+        this.renderCheckoutStep2();
+      }
+      timeLeft--;
+    }, 1000);
+  },
+
+  // Credit Card formatting and flip interaction listeners
+  setupCardListeners() {
+    const card = document.getElementById('pg-virtual-card');
+    const holderIn = document.getElementById('card-holder');
+    const numberIn = document.getElementById('card-number');
+    const expiryIn = document.getElementById('card-expiry');
+    const cvvIn = document.getElementById('card-cvv');
+
+    const holderDisp = document.getElementById('card-holder-display');
+    const numberDisp = document.getElementById('card-num-display');
+    const expiryDisp = document.getElementById('card-expiry-display');
+    const cvvDisp = document.getElementById('card-cvv-display');
+    const brandDisp = document.getElementById('card-brand-logo');
+
+    // Name update
+    holderIn.addEventListener('input', (e) => {
+      holderDisp.textContent = e.target.value.toUpperCase() || 'YOUR NAME';
+    });
+
+    // Card number formatting and brand detection
+    numberIn.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.startsWith('4')) {
+        brandDisp.textContent = 'VISA';
+      } else if (val.match(/^(5[1-5]|2[2-7])/)) {
+        brandDisp.textContent = 'MASTERCARD';
+      } else if (val.match(/^(60|65|81|82)/)) {
+        brandDisp.textContent = 'RUPAY';
+      } else {
+        brandDisp.textContent = 'CARD';
+      }
+
+      // Group by 4 digits
+      let formatted = val.match(/.{1,4}/g);
+      if (formatted) {
+        numberIn.value = formatted.join(' ');
+        numberDisp.textContent = formatted.join(' ');
+      } else {
+        numberIn.value = '';
+        numberDisp.textContent = '•••• •••• •••• ••••';
+      }
+    });
+
+    // Expiry date formatting
+    expiryIn.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length >= 2) {
+        expiryIn.value = val.slice(0, 2) + '/' + val.slice(2, 4);
+        expiryDisp.textContent = expiryIn.value;
+      } else {
+        expiryIn.value = val;
+        expiryDisp.textContent = val || 'MM/YY';
+      }
+    });
+
+    // CVV update
+    cvvIn.addEventListener('input', (e) => {
+      cvvDisp.textContent = e.target.value || '•••';
+    });
+
+    // Flip card when focusing on CVV
+    cvvIn.addEventListener('focus', () => {
+      card.classList.add('flipped');
+    });
+    cvvIn.addEventListener('blur', () => {
+      card.classList.remove('flipped');
+    });
+  },
+
+  // Refresh captcha button helper
+  refreshCaptcha() {
+    const val = Math.random().toString(36).substring(2, 6).toUpperCase();
+    this.checkoutData.currentCaptcha = val;
+    const disp = document.getElementById('captcha-display');
+    if (disp) disp.textContent = val;
+  },
+
+  // Simulated processing screen
+  showPaymentProcessing(msg, successCallback) {
+    const mainView = document.getElementById('pg-main-view');
+    mainView.innerHTML = `
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px; padding:2rem;">
+        <div style="width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--primary); border-radius:50%; animation:spin 1s infinite linear; margin-bottom:1.5rem;"></div>
+        <p style="font-family:var(--ff-head); font-weight:800; font-size:1.1rem; text-align:center; color:var(--text);" id="processing-msg">${msg}</p>
+        <p style="font-size:0.75rem; color:var(--text2); text-align:center; margin-top:8px;">Please do not close this window or press back...</p>
+      </div>
+    `;
+
+    // Process steps simulation
+    setTimeout(() => {
+      successCallback();
+    }, 2800);
+  },
+
+  // UPI verification submit handler
+  verifyUPIPayment(e) {
+    e.preventDefault();
+    if (this.upiInterval) clearInterval(this.upiInterval);
+
+    this.showPaymentProcessing("Verifying UPI Transaction ID with Bank...", () => {
+      this.completeOrderPlacement();
+    });
+  },
+
+  // Card payment submit handler
+  processCardPayment(e) {
+    e.preventDefault();
+    this.showPaymentProcessing("Contacting card issuer & authenticating...", () => {
+      const mainView = document.getElementById('pg-main-view');
+      mainView.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px; padding:2rem;">
+          <div style="width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--success); border-radius:50%; animation:spin 1s infinite linear; margin-bottom:1.5rem;"></div>
+          <p style="font-family:var(--ff-head); font-weight:800; font-size:1.1rem; text-align:center; color:var(--text);">Verifying OTP Security...</p>
+          <p style="font-size:0.75rem; color:var(--text2); text-align:center; margin-top:8px;">Authentication secure. Finalizing merchant settlement...</p>
+        </div>
+      `;
+
+      setTimeout(() => {
+        this.completeOrderPlacement();
+      }, 2000);
+    });
+  },
+
+  // COD captcha verification handler
+  verifyCODPayment(e) {
+    e.preventDefault();
+    const typed = document.getElementById('captcha-input').value.toUpperCase().trim();
+    if (typed !== this.checkoutData.currentCaptcha) {
+      this.toast("Incorrect verification code. Please try again.", "error");
+      this.refreshCaptcha();
+      return;
+    }
+
+    this.showPaymentProcessing("Validating order confirmation...", () => {
+      this.completeOrderPlacement();
+    });
+  },
+
+  // Final success order placement
+  completeOrderPlacement() {
     const cart = Store.cart();
     const totals = Store.totals();
 
@@ -1141,11 +1467,11 @@ const App = {
       items: cart,
       totals,
       addr: this.checkoutData.addr,
-      pay: payMethod
+      pay: this.checkoutData.payMethod
     });
 
     this.closeActiveModal();
-    this.toast(`Order placed successfully! ID: ${order.id}`, 'success');
+    this.toast(`Payment Secure! Order placed successfully. ID: ${order.id}`, 'success');
     this.go('profile');
   },
 
