@@ -277,7 +277,7 @@ const PRODUCTS = [
   {
     id: "p13",
     title: "Classic Oxford Button-Down Shirt",
-    brand: "SUPROJIT ESSENTIALS",
+    brand: "IKON ESSENTIALS",
     category: "Shirts & Pants",
     price: 699,
     originalPrice: 1299,
@@ -299,7 +299,7 @@ const PRODUCTS = [
   {
     id: "p14",
     title: "Slim Fit Formal Trousers",
-    brand: "SUPROJIT ESSENTIALS",
+    brand: "IKON ESSENTIALS",
     category: "Shirts & Pants",
     price: 849,
     originalPrice: 1799,
@@ -321,7 +321,7 @@ const PRODUCTS = [
   {
     id: "p15",
     title: "Printed Casual Shirt & Chino Combo",
-    brand: "SUPROJIT CASUAL",
+    brand: "IKON CASUAL",
     category: "Shirts & Pants",
     price: 999,
     originalPrice: 2199,
@@ -343,7 +343,7 @@ const PRODUCTS = [
   {
     id: "p16",
     title: "Argentina 3-Star Premium Club Jersey",
-    brand: "SUPROJIT SPORTS",
+    brand: "IKON SPORTS",
     category: "Club Jersey",
     price: 899,
     originalPrice: 1799,
@@ -365,7 +365,7 @@ const PRODUCTS = [
   {
     id: "p17",
     title: "Real Madrid 2026 Home Club Jersey",
-    brand: "SUPROJIT SPORTS",
+    brand: "IKON SPORTS",
     category: "Club Jersey",
     price: 999,
     originalPrice: 1999,
