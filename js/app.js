@@ -500,7 +500,7 @@ const App = {
         <aside class="avatar-card">
           <div class="avatar-circle">${u.name.charAt(0).toUpperCase()}</div>
           <h3 style="font-family:var(--ff-head); font-weight:800; font-size:1.3rem;">${u.name}</h3>
-          <p style="color:var(--text2); font-size:.82rem; margin-bottom:1.5rem;">${u.email}</p>
+          <p style="color:var(--text2); font-size:.82rem; margin-bottom:1.5rem;">${u.email} &nbsp;|&nbsp; <strong>${u.gender}</strong></p>
           
           <div style="text-align:left; background:var(--bg2); border:1px solid var(--border); padding:1rem; border-radius:var(--r-sm); margin-bottom:1.5rem; font-size:.82rem;">
             <div style="font-weight:700; color:var(--text); margin-bottom:.5rem;">Shipping Address</div>
@@ -957,25 +957,34 @@ const App = {
     }
   },
 
-  // Login Modal
+  // Login Modal with OTP & Gender
   openLoginModal() {
     this.activeModalType = 'login';
     const content = document.getElementById('modal-content');
     
     content.innerHTML = `
-      <div style="max-width:380px; margin:1rem auto; padding:1rem;">
+      <div style="max-width:380px; margin:1rem auto; padding:1rem;" id="login-modal-wrapper">
         <h2 style="font-family:var(--ff-head); font-weight:800; font-size:1.6rem; text-align:center; margin-bottom:1.5rem;">Welcome to Suprojit Shops</h2>
         
         <form id="modal-login-form" onsubmit="App.handleModalLogin(event)">
-          <div style="margin-bottom:1.25rem;">
+          <div style="margin-bottom:1rem;">
             <label style="font-size:.8rem; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">Your Name</label>
             <input type="text" id="log-name" class="price-inp" placeholder="Fashion Lover" required>
           </div>
-          <div style="margin-bottom:1.5rem;">
-            <label style="font-size:.8rem; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">Email Address</label>
-            <input type="email" id="log-email" class="price-inp" placeholder="name@example.com" required>
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:.8rem; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">Email / Phone Number</label>
+            <input type="text" id="log-email" class="price-inp" placeholder="name@example.com or 9876543210" required>
           </div>
-          <button type="submit" class="btn btn-primary btn-blk">LOG IN / REGISTER</button>
+          <div style="margin-bottom:1.5rem;">
+            <label style="font-size:.8rem; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">Select Gender</label>
+            <select id="log-gender" class="price-inp" required style="width:100%; border:1px solid var(--border); border-radius:var(--r-sm); background:var(--bg2); color:var(--text); padding:8px 12px; font-weight:600; font-size:0.9rem;">
+              <option value="" disabled selected>Choose your gender</option>
+              <option value="Male">Male ♂</option>
+              <option value="Female">Female ♀</option>
+              <option value="Other">Other ⚧</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-blk">SEND OTP CODE 📲</button>
         </form>
       </div>
     `;
@@ -987,10 +996,85 @@ const App = {
     e.preventDefault();
     const name = document.getElementById('log-name').value.trim();
     const email = document.getElementById('log-email').value.trim();
+    const gender = document.getElementById('log-gender').value;
     
-    Store.login(email, name);
+    // Generate a random 4-digit OTP
+    const generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+    this.tempLoginData = { name, email, gender, otp: generatedOTP };
+
+    // Render the OTP validation screen inside the modal
+    this.renderOTPVerificationScreen();
+    
+    // Auto popup toast containing OTP
+    setTimeout(() => {
+      this.toast(`💬 SMS: Your Suprojit Shops login verification OTP is: ${generatedOTP}`, 'info');
+    }, 800);
+  },
+
+  renderOTPVerificationScreen() {
+    const wrapper = document.getElementById('login-modal-wrapper');
+    const { email } = this.tempLoginData;
+
+    wrapper.innerHTML = `
+      <h2 style="font-family:var(--ff-head); font-weight:800; font-size:1.6rem; text-align:center; margin-bottom:1rem;">OTP Verification</h2>
+      <p style="font-size:0.8rem; text-align:center; color:var(--text2); margin-bottom:1.5rem; line-height:1.4;">
+        We sent a 4-digit verification code to <strong style="color:var(--text);">${email}</strong>.
+      </p>
+
+      <form onsubmit="App.verifyLoginOTP(event)">
+        <div style="margin-bottom:1.25rem;">
+          <input type="text" id="otp-code-input" pattern="[0-9]{4}" maxlength="4" placeholder="Enter 4-digit OTP" required style="text-align:center; font-size:1.5rem; font-weight:800; letter-spacing:8px; padding:10px; width:100%; border:1px solid var(--border); border-radius:var(--r-sm); background:var(--bg2); color:var(--text);">
+        </div>
+        <div style="font-size:0.8rem; text-align:center; color:var(--text2); margin-bottom:1.5rem;">
+          Didn't receive code? Resend in <span style="color:var(--primary); font-weight:700;" id="otp-timer-display">30s</span>
+        </div>
+        <div style="display:flex; gap:1rem;">
+          <button type="button" class="btn btn-secondary" onclick="App.openLoginModal()" style="flex:1;">BACK</button>
+          <button type="submit" class="btn btn-primary" style="flex:2;">VERIFY & LOGIN 🎉</button>
+        </div>
+      </form>
+    `;
+
+    // Start 30s Countdown timer
+    let timeLeft = 30;
+    const timerDisp = document.getElementById('otp-timer-display');
+    if (this.otpTimerInterval) clearInterval(this.otpTimerInterval);
+
+    this.otpTimerInterval = setInterval(() => {
+      timeLeft--;
+      if (timerDisp) timerDisp.textContent = `${timeLeft}s`;
+      
+      if (timeLeft <= 0) {
+        clearInterval(this.otpTimerInterval);
+        if (timerDisp) {
+          timerDisp.innerHTML = `<span style="cursor:pointer; text-decoration:underline;" onclick="App.resendLoginOTP()">Resend OTP</span>`;
+        }
+      }
+    }, 1000);
+  },
+
+  resendLoginOTP() {
+    const newOTP = Math.floor(1000 + Math.random() * 9000).toString();
+    this.tempLoginData.otp = newOTP;
+    this.renderOTPVerificationScreen();
+    this.toast(`💬 SMS: Your new login verification OTP is: ${newOTP}`, 'info');
+  },
+
+  verifyLoginOTP(e) {
+    e.preventDefault();
+    const typedOTP = document.getElementById('otp-code-input').value.trim();
+    
+    if (typedOTP !== this.tempLoginData.otp) {
+      this.toast("Invalid OTP code. Please check and try again.", "error");
+      return;
+    }
+
+    if (this.otpTimerInterval) clearInterval(this.otpTimerInterval);
+
+    const { email, name, gender } = this.tempLoginData;
+    Store.login(email, name, gender);
     this.closeActiveModal();
-    this.toast(`Welcome, ${name}! ✨`, 'success');
+    this.toast(`Welcome back, ${name}! ✨`, 'success');
   },
 
   // Checkout Modal Flow
