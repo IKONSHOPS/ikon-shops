@@ -258,8 +258,8 @@ const App = {
         <div class="flash-left">
           <div class="flash-icon">⚡</div>
           <div>
-            <div class="flash-title">MIDNIGHT FLASH SALE</div>
-            <div class="flash-sub">Limited stock — up to 61% OFF, hurry!</div>
+            <div class="flash-title">CLUB JERSEY SALE</div>
+            <div class="flash-sub">Premium club jerseys up to 50% OFF, buy now!</div>
           </div>
         </div>
         <div class="countdown">
