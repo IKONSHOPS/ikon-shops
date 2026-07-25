@@ -918,3 +918,166 @@ ul  { list-style:none; }
 .step-label { font-size:.7rem; font-weight:600; color:var(--text2); text-align:center; }
 .step-line { flex:1; height:2px; background:var(--border); }
 .step.done ~ .step-line { background:var(--success); }
+
+/* ============================================================
+   PAYMENT GATEWAY STYLES
+   ============================================================ */
+.pg-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.pg-card-wrapper {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 320px;
+  height: 190px;
+  margin: 1.5rem auto;
+}
+.pg-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.pg-card.flipped {
+  transform: rotateY(180deg);
+}
+.pg-card-front, .pg-card-back {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-md);
+  position: absolute;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
+  color: #fff;
+  font-family: monospace;
+}
+.pg-card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  padding: 0;
+  justify-content: flex-start;
+}
+.pg-card-chip {
+  width: 40px;
+  height: 30px;
+  background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+  border-radius: 4px;
+}
+.pg-card-brand-logo {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-style: italic;
+  text-align: right;
+}
+.pg-card-number {
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+  margin: 1rem 0;
+  text-align: center;
+  word-spacing: 4px;
+}
+.pg-card-holder-group {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+.pg-card-holder-name {
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+}
+.pg-card-black-bar {
+  width: 100%;
+  height: 40px;
+  background: #000;
+  margin-top: 1.25rem;
+}
+.pg-card-signature-bar {
+  width: 80%;
+  height: 35px;
+  background: #eee;
+  margin: 1.25rem auto 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 10px;
+  color: #333;
+  font-weight: bold;
+  font-style: italic;
+}
+/* UPI QR Code Styles */
+.upi-qr-box {
+  width: 150px;
+  height: 150px;
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin: 1rem auto;
+  position: relative;
+  border: 4px solid var(--primary);
+}
+.upi-qr-scanner-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: var(--primary);
+  top: 0;
+  left: 0;
+  animation: qr-scan 2.5s infinite linear;
+}
+@keyframes qr-scan {
+  0% { top: 0; }
+  50% { top: 100%; }
+  100% { top: 0; }
+}
+.upi-timer {
+  font-family: monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ff6b35;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+/* COD captcha styles */
+.captcha-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.captcha-code {
+  background: repeating-linear-gradient(45deg, var(--bg2) 0px, var(--bg2) 10px, var(--border) 10px, var(--border) 20px);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: 6px;
+  padding: 8px 20px;
+  border-radius: var(--r-sm);
+  user-select: none;
+  font-style: italic;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.captcha-refresh-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
