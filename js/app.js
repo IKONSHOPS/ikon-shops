@@ -998,27 +998,39 @@ const App = {
     const email = document.getElementById('log-email').value.trim();
     const gender = document.getElementById('log-gender').value;
     
+    // Check if input is a phone number (only digits, spaces, hyphens, plus)
+    const isPhone = /^[0-9\s\-+]+$/.test(email) && email.replace(/\D/g, '').length >= 10;
+    const type = isPhone ? 'phone' : 'email';
+    
     // Generate a random 4-digit OTP
     const generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-    this.tempLoginData = { name, email, gender, otp: generatedOTP };
+    this.tempLoginData = { name, email, gender, otp: generatedOTP, type };
 
     // Render the OTP validation screen inside the modal
     this.renderOTPVerificationScreen();
     
-    // Auto popup toast containing OTP
+    // Auto popup toast containing OTP (SMS or Email style)
     setTimeout(() => {
-      this.toast(`💬 SMS: Your Suprojit Shops login verification OTP is: ${generatedOTP}`, 'info');
+      if (type === 'phone') {
+        this.toast(`💬 SMS: Your Suprojit Shops login verification OTP is: ${generatedOTP}`, 'info');
+      } else {
+        this.toast(`✉️ Email: Your Suprojit Shops login verification OTP is: ${generatedOTP}`, 'info');
+      }
     }, 800);
   },
 
   renderOTPVerificationScreen() {
     const wrapper = document.getElementById('login-modal-wrapper');
-    const { email } = this.tempLoginData;
+    const { email, type } = this.tempLoginData;
+    
+    const displayMsg = type === 'phone' 
+      ? `We sent a 4-digit verification code via SMS to your phone number <strong style="color:var(--text);">${email}</strong>.`
+      : `We sent a 4-digit verification code via Email to <strong style="color:var(--text);">${email}</strong>.`;
 
     wrapper.innerHTML = `
       <h2 style="font-family:var(--ff-head); font-weight:800; font-size:1.6rem; text-align:center; margin-bottom:1rem;">OTP Verification</h2>
       <p style="font-size:0.8rem; text-align:center; color:var(--text2); margin-bottom:1.5rem; line-height:1.4;">
-        We sent a 4-digit verification code to <strong style="color:var(--text);">${email}</strong>.
+        ${displayMsg}
       </p>
 
       <form onsubmit="App.verifyLoginOTP(event)">
@@ -1040,6 +1052,7 @@ const App = {
     const timerDisp = document.getElementById('otp-timer-display');
     if (this.otpTimerInterval) clearInterval(this.otpTimerInterval);
 
+
     this.otpTimerInterval = setInterval(() => {
       timeLeft--;
       if (timerDisp) timerDisp.textContent = `${timeLeft}s`;
@@ -1057,7 +1070,12 @@ const App = {
     const newOTP = Math.floor(1000 + Math.random() * 9000).toString();
     this.tempLoginData.otp = newOTP;
     this.renderOTPVerificationScreen();
-    this.toast(`💬 SMS: Your new login verification OTP is: ${newOTP}`, 'info');
+    
+    if (this.tempLoginData.type === 'phone') {
+      this.toast(`💬 SMS: Your new login verification OTP is: ${newOTP}`, 'info');
+    } else {
+      this.toast(`✉️ Email: Your new login verification OTP is: ${newOTP}`, 'info');
+    }
   },
 
   verifyLoginOTP(e) {
