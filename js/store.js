@@ -73,8 +73,8 @@ const Store = {
 
   /* ---- USER ---- */
   user(){ try{ return JSON.parse(localStorage.getItem(KEYS.USER)); }catch{ return null; } },
-  login(email, name){
-    const u = { isLoggedIn:true, email, name,
+  login(email, name, gender = "Not Specified"){
+    const u = { isLoggedIn:true, email, name, gender,
       joined: new Date().toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
       address: { name, phone:'+91 98765 43210', street:'Flat 4B, Horizon Towers', city:'Mumbai', pin:'400001' }
     };
