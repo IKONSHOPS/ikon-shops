@@ -1068,6 +1068,10 @@ const App = {
         </div>
         <div style="font-size:0.8rem; text-align:center; color:var(--text2); margin-bottom:1.5rem;">
           Didn't receive code? Resend in <span style="color:var(--primary); font-weight:700;" id="otp-timer-display">30s</span>
+          <br>
+          <span style="font-size:0.72rem; color:var(--primary); text-decoration:underline; cursor:pointer; display:inline-block; margin-top:10px; font-weight:700;" onclick="App.toast('🔑 Test OTP Code is: ' + App.tempLoginData.otp, 'info')">
+            ⚠️ Click here to show test OTP code
+          </span>
         </div>
         <div style="display:flex; gap:1rem;">
           <button type="button" class="btn btn-secondary" onclick="App.openLoginModal()" style="flex:1;">BACK</button>
