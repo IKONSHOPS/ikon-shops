@@ -15,7 +15,7 @@ const App = {
     cat: 'all',
     q: '',
     minPrice: 0,
-    maxPrice: 10000,
+    maxPrice: 15000,
     minRating: 0,
     sort: 'popular'
   },
@@ -628,7 +628,7 @@ const App = {
     if(this.filters.q) {
       tags.push(`Search: "${this.filters.q}" <button onclick="App.removeSearchTag()">&times;</button>`);
     }
-    if(this.filters.minPrice > 0 || this.filters.maxPrice < 10000) {
+    if(this.filters.minPrice > 0 || this.filters.maxPrice < 15000) {
       tags.push(`Price: ₹${this.filters.minPrice} - ₹${this.filters.maxPrice} <button onclick="App.resetPriceFilter()">&times;</button>`);
     }
     if(this.filters.minRating > 0) {
@@ -671,7 +671,7 @@ const App = {
   },
   resetPriceFilter(){
     this.filters.minPrice = 0;
-    this.filters.maxPrice = 10000;
+    this.filters.maxPrice = 15000;
     const minInp = document.getElementById('p-min');
     const maxInp = document.getElementById('p-max');
     if(minInp) minInp.value = 0;
@@ -682,7 +682,7 @@ const App = {
     this.filters.cat = 'all';
     this.filters.q = '';
     this.filters.minPrice = 0;
-    this.filters.maxPrice = 10000;
+    this.filters.maxPrice = 15000;
     this.filters.minRating = 0;
     this.filters.sort = 'popular';
     
