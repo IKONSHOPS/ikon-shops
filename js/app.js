@@ -1189,13 +1189,9 @@ const App = {
       return `
         <div class="pg-container">
           <div class="upi-timer" id="upi-countdown">03:00</div>
-          <div class="upi-qr-box">
+          <div class="upi-qr-box" style="width:200px; height:320px; padding:4px; border:3px solid var(--primary); display:flex; align-items:center; justify-content:center;">
             <div class="upi-qr-scanner-line"></div>
-            <!-- Mock SVG QR Code -->
-            <svg width="100" height="100" viewBox="0 0 29 29" style="background:#fff; shape-rendering:crispEdges;">
-              <path fill="#000" d="M0 0h7v7H0zm22 0h7v7h-7zM0 22h7v7H0zm9 0h2v2H9zm2 2h2v2h-2zm-2 2h2v3H9zm4-15h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm10-4h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm-6-2h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2z"/>
-              <path fill="#000" d="M2 2h3v3H2zm20 0h3v3h-3zM2 24h3v3H2zm7-20h2v2H9zm4 11h2v2h-2zm4-6h2v2h-2zm2 6h2v2h-2zm-4 4h2v2h-2zm4 4h2v2h-2zm-4 3h2v2h-2z"/>
-            </svg>
+            <img src="images/upi_qr.jpg" alt="Paytm UPI QR" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">
           </div>
           <p style="font-size:0.78rem; color:var(--text2); text-align:center; margin-bottom:1.25rem; max-width:280px; line-height:1.4;">
             Scan this QR code with PhonePe, GPay, Paytm or Bhim App to complete the payment of <strong>₹${amount.toLocaleString()}</strong>.
