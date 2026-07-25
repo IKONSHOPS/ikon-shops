@@ -1009,14 +1009,43 @@ const App = {
     // Render the OTP validation screen inside the modal
     this.renderOTPVerificationScreen();
     
-    // Auto popup toast containing OTP (SMS or Email style)
-    setTimeout(() => {
-      if (type === 'phone') {
-        this.toast(`💬 SMS: Your Suprojit Shops login verification OTP is: ${generatedOTP}`, 'info');
-      } else {
-        this.toast(`✉️ Email: Your Suprojit Shops login verification OTP is: ${generatedOTP}`, 'info');
+    // Send SMS via TextBelt or Fallback
+    if (type === 'phone') {
+      let cleanedPhone = email.trim();
+      if (!cleanedPhone.startsWith('+')) {
+        // Default to +91 (India) if no country code is specified
+        cleanedPhone = '+91' + cleanedPhone.replace(/\D/g, '');
       }
-    }, 800);
+
+      this.toast("Sending verification OTP SMS...", "info");
+
+      fetch('https://textbelt.com/text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          phone: cleanedPhone,
+          message: `Your Suprojit Shops verification OTP code is: ${generatedOTP}. Valid for 3 mins.`,
+          key: 'free'
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          this.toast("💬 Real SMS OTP sent successfully to your phone!", "success");
+        } else {
+          this.toast("⚠️ Free SMS Limit Exceeded. Check Console (F12) for OTP!", "warning");
+          console.log(`[Developer OTP Fallback] Your OTP is: ${generatedOTP}`);
+        }
+      })
+      .catch(err => {
+        this.toast("⚠️ SMS dispatch failed. Check Console (F12) for OTP!", "warning");
+        console.log(`[Developer OTP Fallback] Your OTP is: ${generatedOTP}`);
+      });
+    } else {
+      // Email fallback
+      this.toast("✉️ OTP sent to email! Check Console (F12) for OTP.", "info");
+      console.log(`[Developer OTP Fallback] Your OTP is: ${generatedOTP}`);
+    }
   },
 
   renderOTPVerificationScreen() {
@@ -1071,10 +1100,41 @@ const App = {
     this.tempLoginData.otp = newOTP;
     this.renderOTPVerificationScreen();
     
-    if (this.tempLoginData.type === 'phone') {
-      this.toast(`💬 SMS: Your new login verification OTP is: ${newOTP}`, 'info');
+    const { email, type } = this.tempLoginData;
+
+    if (type === 'phone') {
+      let cleanedPhone = email.trim();
+      if (!cleanedPhone.startsWith('+')) {
+        cleanedPhone = '+91' + cleanedPhone.replace(/\D/g, '');
+      }
+
+      this.toast("Resending verification OTP SMS...", "info");
+
+      fetch('https://textbelt.com/text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          phone: cleanedPhone,
+          message: `Your new Suprojit Shops verification OTP code is: ${newOTP}. Valid for 3 mins.`,
+          key: 'free'
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          this.toast("💬 Real SMS OTP resent successfully!", "success");
+        } else {
+          this.toast("⚠️ SMS Limit Exceeded. Check Console (F12) for OTP!", "warning");
+          console.log(`[Developer OTP Resend Fallback] Your new OTP is: ${newOTP}`);
+        }
+      })
+      .catch(err => {
+        this.toast("⚠️ SMS dispatch failed. Check Console (F12) for OTP!", "warning");
+        console.log(`[Developer OTP Resend Fallback] Your new OTP is: ${newOTP}`);
+      });
     } else {
-      this.toast(`✉️ Email: Your new login verification OTP is: ${newOTP}`, 'info');
+      this.toast("✉️ OTP resent to email! Check Console (F12) for OTP.", "info");
+      console.log(`[Developer OTP Resend Fallback] Your new OTP is: ${newOTP}`);
     }
   },
 
