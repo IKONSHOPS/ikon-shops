@@ -355,11 +355,11 @@ const PRODUCTS = [
     colors: ["#75aadb", "#ffffff"],
     colorNames: ["Albicelete Blue", "Chalk White"],
     gradient: "linear-gradient(135deg, #75aadb 0%, #ffffff 50%, #75aadb 100%)",
-    image: "images/jersey_club_1.jpg",
+    image: "images/jersey_argentina.jpg",
     emoji: "👕",
     isFlashDeal: true,
     isTrending: true,
-    description: "Premium dry-fit breathable polyester fabric jersey featuring Argentina's iconic sky blue and white vertical stripes, gold embroidered 3-stars logo, and moisture-wicking technology.",
+    description: "Best Quality premium dry-fit breathable polyester fabric jersey featuring Argentina's iconic sky blue and white stripes, premium rubber print decals, gold embroidered 3-stars logo, and moisture-wicking technology.",
     inStock: true
   },
   {
