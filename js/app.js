@@ -204,7 +204,7 @@ const App = {
         sub:'Oversized hoodies, metallic cargos &amp; futuristic platforms.',
         cta:"App.go('shop')", ctaLabel:'Explore Drop →', deco:'👕 👖 🧥' },
       { grad:'linear-gradient(135deg,#0d1b2a 0%,#1b4332 40%,#7928ca 70%,#ffd700 100%)',
-        tag:'STYLE IKON PICK &amp; LUXE', title:'FESTIVE ETHNIC<br>ELEGANCE',
+        tag:'IKON SHOPS PICK &amp; LUXE', title:'FESTIVE ETHNIC<br>ELEGANCE',
         sub:'Handcrafted velvets, zari embroidery &amp; organza dupattas.',
         cta:"App.go('shop',{cat:'Ethnic'})", ctaLabel:'Shop Ethnic →', deco:'👗 💎 📿' },
     ];
@@ -964,7 +964,7 @@ const App = {
     
     content.innerHTML = `
       <div style="max-width:380px; margin:1rem auto; padding:1rem;" id="login-modal-wrapper">
-        <h2 style="font-family:var(--ff-head); font-weight:800; font-size:1.6rem; text-align:center; margin-bottom:1.5rem;">Welcome to Style Ikon</h2>
+        <h2 style="font-family:var(--ff-head); font-weight:800; font-size:1.6rem; text-align:center; margin-bottom:1.5rem;">Welcome to IKON SHOPS</h2>
         
         <form id="modal-login-form" onsubmit="App.handleModalLogin(event)">
           <div style="margin-bottom:1rem;">
@@ -1024,7 +1024,7 @@ const App = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           phone: cleanedPhone,
-          message: `Your Style Ikon verification OTP code is: ${generatedOTP}. Valid for 3 mins.`,
+          message: `Your IKON SHOPS verification OTP code is: ${generatedOTP}. Valid for 3 mins.`,
           key: 'free'
         })
       })
@@ -1119,7 +1119,7 @@ const App = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           phone: cleanedPhone,
-          message: `Your new Style Ikon verification OTP code is: ${newOTP}. Valid for 3 mins.`,
+          message: `Your new IKON SHOPS verification OTP code is: ${newOTP}. Valid for 3 mins.`,
           key: 'free'
         })
       })
