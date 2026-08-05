@@ -1,9 +1,9 @@
 {
   "name": "IKON SHOPS",
   "short_name": "IKON SHOPS",
-  "description": "IKON SHOPS — Premium Fashion Store. Streetwear, Club Jerseys, Ethnic Wear & More.",
-  "start_url": "/ikon-shops/",
-  "scope": "/ikon-shops/",
+  "description": "IKON SHOPS - Premium Fashion Store. Streetwear, Club Jerseys, Ethnic Wear and More.",
+  "start_url": "https://ikonshops.github.io/ikon-shops/",
+  "scope": "https://ikonshops.github.io/ikon-shops/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0a0f",
@@ -12,24 +12,28 @@
   "categories": ["shopping", "lifestyle", "fashion"],
   "icons": [
     {
-      "src": "images/icon-192.png",
+      "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/jpeg",
+      "purpose": "any"
     },
     {
-      "src": "images/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
+      "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    },
     {
-      "src": "images/screenshot1.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow"
+      "src": "https://ikonshops.github.io/ikon-shops/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "https://ikonshops.github.io/ikon-shops/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
@@ -37,15 +41,15 @@
       "name": "Shop Now",
       "short_name": "Shop",
       "description": "Browse all products",
-      "url": "/ikon-shops/?view=shop",
-      "icons": [{ "src": "images/icon-192.png", "sizes": "192x192" }]
+      "url": "https://ikonshops.github.io/ikon-shops/?view=shop",
+      "icons": [{ "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Club Jerseys",
       "short_name": "Jerseys",
       "description": "Browse Club Jerseys",
-      "url": "/ikon-shops/?view=shop&cat=Club%20Jersey",
-      "icons": [{ "src": "images/icon-192.png", "sizes": "192x192" }]
+      "url": "https://ikonshops.github.io/ikon-shops/?view=shop&cat=Club%20Jersey",
+      "icons": [{ "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
