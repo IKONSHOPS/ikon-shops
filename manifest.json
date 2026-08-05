@@ -12,27 +12,39 @@
   "categories": ["shopping", "lifestyle", "fashion"],
   "icons": [
     {
-      "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/jpeg",
+      "src": "https://ikonshops.github.io/ikon-shops/images/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://ikonshops.github.io/ikon-shops/images/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "maskable"
     },
     {
       "src": "https://ikonshops.github.io/ikon-shops/images/icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "https://ikonshops.github.io/ikon-shops/images/icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
@@ -42,14 +54,14 @@
       "short_name": "Shop",
       "description": "Browse all products",
       "url": "https://ikonshops.github.io/ikon-shops/?view=shop",
-      "icons": [{ "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Club Jerseys",
       "short_name": "Jerseys",
       "description": "Browse Club Jerseys",
       "url": "https://ikonshops.github.io/ikon-shops/?view=shop&cat=Club%20Jersey",
-      "icons": [{ "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "https://ikonshops.github.io/ikon-shops/images/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }
